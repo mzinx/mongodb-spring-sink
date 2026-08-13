@@ -49,30 +49,15 @@ changeStreamConfigService.save(ChangeStreamConfig.builder()
 
 The change-stream library resolves the bean by name and invokes it per event;
 the listener recomputes the whole view keyed by `_id` via the pipeline's terminal
-`$merge`/`$out`.
+`$merge`/`$out`. The recompute is authoritative — the `$merge`/`$out` has written
+the view by the time `onEvent` returns.
 
-### Extension seam: `MaterializedViewRecomputedEvent`
-
-After each recompute the listener publishes a
-`MaterializedViewRecomputedEvent(sourceCollection, streamId)`. Other components
-can react **without this module depending on them** — for example, a
-WebSocket/messaging layer can broadcast a refresh hint to live clients:
-
-```java
-@Component
-class ViewRefreshBroadcaster {
-    private final MessageService messageService;
-    private final CommandMessages commandMessages;
-    // ...
-    @EventListener
-    void onRecomputed(MaterializedViewRecomputedEvent e) {
-        messageService.broadcast(commandMessages.refresh(e.getSourceCollection()));
-    }
-}
-```
-
-The recompute is authoritative (the `$merge` has already written the view); the
-event is only a notification.
+> **Notifying live clients.** If you need to tell WebSocket clients a view
+> changed, don't do it from this listener — the recompute's own `$merge`/`$out`
+> write is itself a change-stream event on the output collection, so watch that
+> collection (e.g. via `mongodb-spring-message-queuing`'s `messaging.watch-collections`)
+> or broadcast a refresh at the point that triggered the write. This keeps the
+> sink module free of any messaging/refresh coupling.
 
 ## Event-driven mirror
 
