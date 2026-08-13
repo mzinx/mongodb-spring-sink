@@ -11,7 +11,6 @@ import org.bson.codecs.DecoderContext;
 import org.bson.codecs.DocumentCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import com.mongodb.client.model.changestream.ChangeStreamDocument;
@@ -21,7 +20,6 @@ import com.mzinx.mongodb.aggregation.model.AggregationSpec;
 import com.mzinx.mongodb.aggregation.model.PipelineTemplate;
 import com.mzinx.mongodb.aggregation.service.AggregationService;
 import com.mzinx.mongodb.changestream.listener.ChangeStreamListener;
-import com.mzinx.mongodb.sink.model.MaterializedViewRecomputedEvent;
 
 /**
  * Generic change-stream processor that maintains a <em>materialized view</em>:
@@ -39,10 +37,6 @@ import com.mzinx.mongodb.sink.model.MaterializedViewRecomputedEvent;
  * Register a change stream with {@code listener = }{@value #BEAN_NAME} and an
  * {@code attributes.outputPipeline} naming the pipeline template to run. The
  * change-stream library resolves this bean by name and drives it per event.
- * <p>
- * After each recompute a {@link MaterializedViewRecomputedEvent} is published so
- * other components (e.g. a WebSocket/messaging layer) can react — e.g. broadcast
- * a refresh hint to live clients — without this module depending on them.
  * <p>
  * The recompute is a full recompute keyed by {@code _id} via the pipeline's
  * terminal {@code $merge} ({@code whenMatched: replace}). Removing output
@@ -108,13 +102,10 @@ public class MaterializedViewListener implements ChangeStreamListener<Document> 
 
     private final PipelineRepository pipelineRepository;
     private final AggregationService aggregationService;
-    private final ApplicationEventPublisher eventPublisher;
 
-    MaterializedViewListener(PipelineRepository pipelineRepository, AggregationService aggregationService,
-            ApplicationEventPublisher eventPublisher) {
+    MaterializedViewListener(PipelineRepository pipelineRepository, AggregationService aggregationService) {
         this.pipelineRepository = pipelineRepository;
         this.aggregationService = aggregationService;
-        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -133,8 +124,7 @@ public class MaterializedViewListener implements ChangeStreamListener<Document> 
     }
 
     /**
-     * Recomputes the output collection for the given change stream, then publishes
-     * a {@link MaterializedViewRecomputedEvent}.
+     * Recomputes the output collection for the given change stream.
      * <p>
      * The aggregation runs against the {@link #ATTR_AGGREGATION_COLLECTION}
      * attribute when set, otherwise against the collection that produced the
@@ -183,9 +173,6 @@ public class MaterializedViewListener implements ChangeStreamListener<Document> 
         // terminal $merge/$out write the view.
         aggregationService.execute(AggregationSpec.of(sourceCollection, stages), variables);
         logger.info("Stream '{}' recompute complete", streamId);
-
-        // Notify any interested components (decoupled extension seam).
-        eventPublisher.publishEvent(new MaterializedViewRecomputedEvent(this, sourceCollection, streamId));
     }
 
     /**
