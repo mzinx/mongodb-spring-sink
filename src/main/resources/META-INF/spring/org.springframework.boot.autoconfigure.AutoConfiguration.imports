@@ -1,1 +1,1 @@
-com.mzinx.mongodb.materializedview.config.MaterializedViewAutoConfig
+com.mzinx.mongodb.sink.config.SinkAutoConfig
