@@ -1,10 +1,10 @@
-package com.mzinx.mongodb.materializedview.model;
+package com.mzinx.mongodb.sink.model;
 
 import org.springframework.context.ApplicationEvent;
 
 /**
  * Published after a materialized view has been recomputed, so other components
- * can react without the materialized-view module depending on them.
+ * can react without the sink module depending on them.
  * <p>
  * This is the module's extension seam: e.g. a WebSocket/messaging layer can
  * {@code @EventListener} this and broadcast a "refresh" hint to live clients.

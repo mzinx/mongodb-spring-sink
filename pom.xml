@@ -10,13 +10,13 @@
 	</parent>
 
 	<groupId>com.mzinx</groupId>
-	<artifactId>mongodb-spring-materialized-view</artifactId>
+	<artifactId>mongodb-spring-sink</artifactId>
 	<version>1.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-	<name>MongoDB Spring Materialized View</name>
-	<description>Change-stream-driven materialized views for MongoDB Spring</description>
-	<url>https://github.com/mzinx/mongodb-spring-materialized-view</url>
+	<name>MongoDB Spring Sink</name>
+	<description>Change-stream-driven collection sinks for MongoDB Spring: materialized views and event-driven mirrors</description>
+	<url>https://github.com/mzinx/mongodb-spring-sink</url>
 
     <licenses>
         <license>
@@ -35,9 +35,9 @@
         </developer>
     </developers>
     <scm>
-        <connection>scm:git:git://github.com/mzinx/mongodb-spring-materialized-view.git</connection>
-        <developerConnection>scm:git:ssh://github.com:mzinx/mongodb-spring-materialized-view.git</developerConnection>
-        <url>https://github.com/mzinx/mongodb-spring-materialized-view/tree/main</url>
+		<connection>scm:git:git://github.com/mzinx/mongodb-spring-sink.git</connection>
+		<developerConnection>scm:git:ssh://github.com:mzinx/mongodb-spring-sink.git</developerConnection>
+		<url>https://github.com/mzinx/mongodb-spring-sink/tree/main</url>
         <tag>HEAD</tag>
     </scm>
 
@@ -50,7 +50,7 @@
 		<dependency>
 			<groupId>com.mzinx</groupId>
 			<artifactId>mongodb-spring-change-stream</artifactId>
-			<version>1.2.0</version>
+			<version>1.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>

@@ -1,4 +1,4 @@
-package com.mzinx.mongodb.materializedview.config;
+package com.mzinx.mongodb.sink.config;
 
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackages;
@@ -8,6 +8,6 @@ import org.springframework.core.type.AnnotationMetadata;
 public class AutoConfigurationPackageRegistrar implements ImportBeanDefinitionRegistrar {
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-        AutoConfigurationPackages.register(registry, "com.mzinx.mongodb.materializedview");
+        AutoConfigurationPackages.register(registry, "com.mzinx.mongodb.sink");
     }
 }
