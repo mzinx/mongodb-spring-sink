@@ -11,8 +11,8 @@
 
 	<groupId>com.mzinx</groupId>
 	<artifactId>mongodb-spring-sink</artifactId>
-	<version>1.2.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
+	<version>1.2.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
 
 	<name>MongoDB Spring Sink</name>
 	<description>Change-stream-driven collection sinks for MongoDB Spring: materialized views and event-driven mirrors</description>
